@@ -9,11 +9,13 @@ import { AppComponent } from './app.component';
 import { MenuComponent } from './menu/menu.component';
 import {MatCardModule} from '@angular/material/card';
 import {MatButtonModule} from '@angular/material/button';
-import {MatGridListModule} from '@angular/material/grid-list'
+import {MatGridListModule} from '@angular/material/grid-list';
+import { DishDetailsComponent } from './dish-details/dish-details.component'
 @NgModule({
   declarations: [
     AppComponent,
-    MenuComponent
+    MenuComponent,
+    DishDetailsComponent
   ],
   imports: [
     BrowserModule,
