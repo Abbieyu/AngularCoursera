@@ -7,15 +7,26 @@ import {Dishes} from '../shared/Dishes';
 export class DishService {
 
   getDishes(): Promise<Dish[]>{
-    return Promise.resolve(Dishes);// this works well if I have the results ready
+    return new Promise(resolve=>{
+      //simulate server latency with 2 second-delay
+      setTimeout(() => resolve(Dishes),2000);
+      
+    });
   }
   constructor() { }
 
   getDish(id: string): Promise<Dish> {
-    return Promise.resolve(Dishes.filter((dish) => (dish.id === id))[0]);
+    return new Promise(resolve=>{
+      setTimeout(() =>
+        resolve(Dishes.filter((dish) => (dish.id === id))[0]), 2000);
+     
+    });
   }
 
   getFeaturedDish(): Promise<Dish> {
-    return Promise.resolve(Dishes.filter((dish) => dish.featured)[0]);
-  }
+    return new Promise(resolve=>{
+      setTimeout(() => resolve(
+        Dishes.filter((dish) => dish.featured)[0]), 2000);
+  });
+}
 }

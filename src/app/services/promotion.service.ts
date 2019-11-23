@@ -7,15 +7,24 @@ import { Promotions} from '../shared/promotions';
 export class PromotionService {
 
   getPromotions():Promise<Promotion[]>{
-    return Promise.resolve(Promotions);
+    return new Promise(resolve=>{
+      setTimeout(() => resolve
+        (Promotions), 2000);
+    });
   }
 
   getPromotion(id:string):Promise<Promotion>{
-    return Promise.resolve(Promotions.filter((promo)=> promo.id===id)[0]);
+    return new Promise(resolve=>{
+      setTimeout(() => resolve
+        (Promotions.filter((promo)=> promo.id===id)[0]), 2000);
+    });
   }
 
   getFeaturedPromotion():Promise<Promotion>{
-    return Promise.resolve(Promotions.filter((promo)=>promo.featured)[0]);
+    return new Promise(resolve=>{
+      setTimeout(() => resolve
+        (Promotions.filter((promo)=>promo.featured)[0]), 2000);
+    });
   }
   constructor() { }
 }

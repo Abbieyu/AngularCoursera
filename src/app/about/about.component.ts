@@ -8,7 +8,7 @@ import {LeaderService} from '../services/leader.service'
 })
 export class AboutComponent implements OnInit {
 
-  Leaders : Leader[]=[];
+  Leaders:Leader[];
   constructor(private leaderService:LeaderService) { }
 
   ngOnInit() {
