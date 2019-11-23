@@ -6,16 +6,16 @@ import { Promotions} from '../shared/promotions';
 })
 export class PromotionService {
 
-  getPromotions():Promotion[]{
-    return Promotions;
+  getPromotions():Promise<Promotion[]>{
+    return Promise.resolve(Promotions);
   }
 
-  getPromotion(id:string):Promotion{
-    return Promotions.filter((promo)=> promo.id===id)[0];
+  getPromotion(id:string):Promise<Promotion>{
+    return Promise.resolve(Promotions.filter((promo)=> promo.id===id)[0]);
   }
 
-  getFeaturedPromotion():Promotion{
-    return Promotions.filter((promo)=>promo.featured)[0];
+  getFeaturedPromotion():Promise<Promotion>{
+    return Promise.resolve(Promotions.filter((promo)=>promo.featured)[0]);
   }
   constructor() { }
 }

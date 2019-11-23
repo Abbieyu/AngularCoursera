@@ -6,16 +6,16 @@ import {Dishes} from '../shared/Dishes';
 })
 export class DishService {
 
-  getDishes():Dish[]{
-    return Dishes;
+  getDishes(): Promise<Dish[]>{
+    return Promise.resolve(Dishes);// this works well if I have the results ready
   }
   constructor() { }
 
-  getDish(id: string): Dish {
-    return Dishes.filter((dish) => (dish.id === id))[0];
+  getDish(id: string): Promise<Dish> {
+    return Promise.resolve(Dishes.filter((dish) => (dish.id === id))[0]);
   }
 
-  getFeaturedDish(): Dish {
-    return Dishes.filter((dish) => dish.featured)[0];
+  getFeaturedDish(): Promise<Dish> {
+    return Promise.resolve(Dishes.filter((dish) => dish.featured)[0]);
   }
 }
