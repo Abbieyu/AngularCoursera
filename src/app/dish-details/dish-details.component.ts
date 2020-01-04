@@ -1,4 +1,4 @@
-import { Component, OnInit,Input } from '@angular/core';
+import { Component, OnInit,Input, ViewChild } from '@angular/core';
 import { Dish } from '../shared/dish';
 import {Params} from '@angular/router';
 import {Location} from '@angular/common';
@@ -6,7 +6,8 @@ import {ActivatedRoute} from '@angular/router';
 import {DishService} from '../services/dish.service';
 import {switchMap} from 'rxjs/operators';
 import { stringify } from 'querystring';
-
+import { FormGroup, FormBuilder,Validators, FormControl } from '@angular/forms';
+import { Comment } from '../shared/comment';
 @Component({
   selector: 'app-dish-details',
   templateUrl: './dish-details.component.html',
@@ -18,8 +19,59 @@ export class DishDetailsComponent implements OnInit {
   DishIds:string[];
   prev:string;
   next:string;
+  value:number;
+  CommentForm:FormGroup;
+  CommentDate : string;
+ // Comment : Comment;
+  @ViewChild('commentForm') CommentFormDirective;
+  formErrors = {
+    'author':'',
+    'comment':''
+  }
+  formValidation ={
+    'author':{
+      'required':'Author name is required',
+      'minlength':'Author name must be at least 2 characters long'
+    },
+    'comment':{
+      'required':'Comment is required'
+    }
+  }
+  // formValidation = {
+  //   'author':
+  // }
 
-  constructor(private dishService:DishService,private location:Location,private route:ActivatedRoute) { 
+  createForm(){
+    this.CommentForm = this.FormBuilder.group({
+      author:['',[Validators.required, Validators.minLength(2),Validators.maxLength(25)]],
+      rating:[5,Validators.required],
+      comment:['',Validators.required]
+    });
+    this.CommentForm.valueChanges
+      .subscribe(data=>this.onValueChanged(data));//initiates form validation and defines error messages
+
+      this.onValueChanged();// reset form validation messages
+  }
+
+  onValueChanged(data?:any){
+    if(!this.CommentForm)
+      {return;}
+    const form = this.CommentForm;
+    for(const field in this.formErrors){
+      if(this.formErrors.hasOwnProperty(field)){//clear previous error messages (if any)
+        this.formErrors[field]='';
+        const control=form.get(field);//the value in the field?
+        if(control && control.dirty && !control.valid){
+            const messages = this.formValidation[field];
+            for (const key in control.errors){
+              if(control.errors.hasOwnProperty(key))
+                this.formErrors[field] +=messages[key] + ' ';
+            }
+        }
+      }
+    }
+  }
+  constructor(private dishService:DishService,private location:Location,private route:ActivatedRoute,private FormBuilder:FormBuilder) { 
 
   }
   
@@ -38,6 +90,7 @@ export class DishDetailsComponent implements OnInit {
       .subscribe((dish)=>{
         this.dish = dish;this.setPrevNext(dish.id);
       });
+      this.createForm();
   }
   setPrevNext(dishId:string){// given the current dishID, I want the previous and next dish Ids
     const index =this.DishIds.indexOf(dishId);
@@ -47,5 +100,23 @@ export class DishDetailsComponent implements OnInit {
   }
   goBack():void{
     this.location.back();//go back to the previos item in the browser history
+  }
+
+  onSubmit(){
+    let comment : Comment;
+    comment = this.CommentForm.value;
+    console.log(comment);
+    this.CommentForm.reset({
+      author:'',
+      rating:5,
+      comment:''
+    });
+    this.CommentFormDirective.resetForm();//reset the form using @viewChild
+    this.value = 5;
+    console.log(this.value);
+    this.dish.comments.push(comment);
+   // this.CommentDate = new Date().toString();
+    comment.date = new Date().toString();;
+    console.log(this.CommentDate);
   }
 };
