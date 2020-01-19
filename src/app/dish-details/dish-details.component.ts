@@ -22,7 +22,9 @@ export class DishDetailsComponent implements OnInit {
   value:number;
   CommentForm:FormGroup;
   CommentDate : string;
- // Comment : Comment;
+  comment : Comment;
+  errMsg:string;
+  dishCopy:Dish;
   @ViewChild('commentForm') CommentFormDirective;
   formErrors = {
     'author':'',
@@ -38,8 +40,8 @@ export class DishDetailsComponent implements OnInit {
     }
   }
   // formValidation = {
-  //   'author':
-  // }
+    // }
+    //   'author':
 
   createForm(){
     this.CommentForm = this.FormBuilder.group({
@@ -86,12 +88,12 @@ export class DishDetailsComponent implements OnInit {
     this.dishService.getDishIds()
       .subscribe((ids)=>{
         this.DishIds=ids;
-      })
+      });
     this.route.params // no snapshot because I have direct access to the params observable.
       .pipe(switchMap((params:Params)=>this.dishService.getDish(params['id'])))
       .subscribe((dish)=>{
-        this.dish = dish;this.setPrevNext(dish.id);
-      });
+        this.dish = dish;this.dishCopy=dish;this.setPrevNext(dish.id);
+      },(errormessage)=>this.errMsg=<any>errormessage);
       this.createForm();
   }
   setPrevNext(dishId:string){// given the current dishID, I want the previous and next dish Ids
@@ -105,9 +107,9 @@ export class DishDetailsComponent implements OnInit {
   }
 
   onSubmit(){
-    let comment : Comment;
-    comment = this.CommentForm.value;
-    console.log(comment);
+     
+    this.comment = this.CommentForm.value;
+    console.log(this.comment);
     this.CommentForm.reset({
       author:'',
       rating:5,
@@ -116,9 +118,16 @@ export class DishDetailsComponent implements OnInit {
     this.CommentFormDirective.resetForm();//reset the form using @viewChild
     this.value = 5;
     console.log(this.value);
-    this.dish.comments.push(comment);
-   // this.CommentDate = new Date().toString();
-    comment.date = new Date().toString();;
+    this.comment.date = new Date().toString();;
     console.log(this.CommentDate);
+    this.dishCopy.comments.push(this.comment);
+    this.dishService.putDish(this.dishCopy)
+    .subscribe((dish) =>{
+      this.dish=dish;this.dishCopy=dish
+    },(errormessage)=>{//an error occured
+      this.dish=null;
+      this.dishCopy=null;
+      this.errMsg=errormessage});
+    
   }
 };
