@@ -1,8 +1,11 @@
 import { Injectable } from '@angular/core';
 import {Observable,of} from 'rxjs';
-import {delay} from 'rxjs/operators';
+import {delay,map,catchError} from 'rxjs/operators';
 import {Dish} from '../shared/dish';
-import {Dishes} from '../shared/Dishes';
+import {HttpClient} from '@angular/common/http';
+import {baseURL} from '../shared/baseURL';
+import {ProcessHTTPMsgService} from '../services/process-httpmsg.service';
+import { error } from 'protractor';
 @Injectable({
   providedIn: 'root'
 })
@@ -15,22 +18,28 @@ export class DishService {
   //   // to make it return a promise instead of an observable
   // }
   getDishes(): Observable<Dish[]>{
-    return of(Dishes)
-    .pipe(delay(2000))
+    return this.http.get<Dish[]>(baseURL+'dishes')
+    .pipe(catchError(this.processHTTPMsg.handleError))
+
   }
-  constructor() { }
+  constructor(private http: HttpClient,private processHTTPMsg : ProcessHTTPMsgService) { 
+
+  }
 
   getDish(id: string): Observable<Dish> {
-    return of(Dishes.filter((dish) => (dish.id === id))[0])
-    .pipe(delay(2000))
+    return this.http.get<Dish>(baseURL+'dishess/'+id)
+    .pipe(catchError(this.processHTTPMsg.handleError));
   }
 
   getFeaturedDish(): Observable<Dish> {
-    return of(Dishes.filter((dish) => dish.featured)[0])
-    .pipe(delay(2000))
+    console.log('here in the featured dish method inside the service');
+    return this.http.get<Dish>(baseURL+'dishes?featured=true').pipe(map(dishes=>dishes[0]))
+    .pipe(catchError(this.processHTTPMsg.handleError))
   }
+  
   getDishIds():Observable<string[] | any>{
-    return of(Dishes.map(dish=>dish.id))//maps each dish in the array and returns an array of dish Ids
-    .pipe(delay(2000));
+    return this.getDishes()
+      .pipe(map(dishes => dishes.map(dish=>dish.id)))
+        .pipe(catchError(error=>error))
   }
 }

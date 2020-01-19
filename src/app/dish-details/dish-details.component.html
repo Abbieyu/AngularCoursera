@@ -13,7 +13,7 @@
               <h3>{{dish.name | uppercase}}</h3>
             </mat-card-title>
           </mat-card-header>
-          <img mat-card-image rowHeight="200px" src={{dish.image}} alt={{dish.name}}/>
+          <img mat-card-image rowHeight="200px" src="{{baseURL+ dish.image}}" alt={{dish.name}}/>
           <mat-card-content>
             <p>{{dish.description}}</p>
           </mat-card-content>
@@ -29,9 +29,7 @@
           </mat-card-actions>
         </mat-card>
   </div>
-  <!-- <div [hidden]="dish">
-      <mat-spinner></mat-spinner><h4>Loading..Please Wait..</h4>
-  </div> -->
+  
   <div fxFlex="40"  *ngIf="dish">
    <h3>Comments</h3>
    <mat-list>
@@ -73,5 +71,11 @@
         </p>
   </form>
   </div>
-     
+  <div [hidden]="dish || errMsg">
+    <mat-spinner></mat-spinner><h4>Loading..Please Wait..</h4>
+  </div>
+  <div FxFlex>
+    <h2>Error</h2>
+    <h4>{{errMsg}}</h4>
+  </div>
 </div>
