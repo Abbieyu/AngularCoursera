@@ -28,7 +28,7 @@ export class HomeComponent implements OnInit {
     .subscribe((dish)=>{
       console.log('here, the dish is : '+dish)
       this.dish = dish;
-    },(errormessage)=>this.errMsgDish=<any>errormessage);
+    },(errormessage)=>{this.errMsgDish=<any>errormessage,console.log('the error is: '+errormessage)});
      this.promotionService.getFeaturedPromotion()
      .subscribe((promotion)=>{
       this.promotion =promotion;

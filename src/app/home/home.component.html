@@ -21,7 +21,7 @@
 <div fxFlex [hidden]="dish  || errMsgDish">
     <mat-spinner></mat-spinner><h4>Loading... Please wait.</h4>
 </div>
-<div fxFlex>
+<div fxFlex *ngIf="errMsgDish">
   <h2>Error</h2>
   <h4>{{errMsgDish}}</h4>
 </div>
