@@ -8,10 +8,22 @@ import {switchMap} from 'rxjs/operators';
 import { stringify } from 'querystring';
 import { FormGroup, FormBuilder,Validators, FormControl } from '@angular/forms';
 import { Comment } from '../shared/comment';
+import {trigger,state,style,animate,transition} from '@angular/animations';
 @Component({
   selector: 'app-dish-details',
   templateUrl: './dish-details.component.html',
-  styleUrls: ['./dish-details.component.scss']
+  styleUrls: ['./dish-details.component.scss'],
+  animations:[//trigger('triggername',[state('statename',what to do)])
+    trigger('visibility',[state('shown',style({
+      transform:'scale(1.01)',
+      opacity:1//means it is completely shown
+    })),state('hidden',style({
+      transform:'scale(0.33)',
+      opacity:0//means it is completely hidden
+    })),
+    transition('* => *',animate('0.8s ease-in-out'))//moving from any state to any other state
+  ])
+  ]
 })
 
 export class DishDetailsComponent implements OnInit {
@@ -25,6 +37,7 @@ export class DishDetailsComponent implements OnInit {
   comment : Comment;
   errMsg:string;
   dishCopy:Dish;
+  visibility: String = 'shown';
   @ViewChild('commentForm') CommentFormDirective;
   formErrors = {
     'author':'',
@@ -39,10 +52,6 @@ export class DishDetailsComponent implements OnInit {
       'required':'Comment is required'
     }
   }
-  // formValidation = {
-    // }
-    //   'author':
-
   createForm(){
     this.CommentForm = this.FormBuilder.group({
       author:['',[Validators.required, Validators.minLength(2),Validators.maxLength(25)]],
@@ -90,9 +99,9 @@ export class DishDetailsComponent implements OnInit {
         this.DishIds=ids;
       });
     this.route.params // no snapshot because I have direct access to the params observable.
-      .pipe(switchMap((params:Params)=>this.dishService.getDish(params['id'])))
+      .pipe(switchMap((params:Params)=>{console.log('the dish is now hidden');this.visibility='hidden';return this.dishService.getDish(params['id']);}))
       .subscribe((dish)=>{
-        this.dish = dish;this.dishCopy=dish;this.setPrevNext(dish.id);
+        this.dish = dish;this.dishCopy=dish;this.setPrevNext(dish.id);this.visibility='shown';console.log('the dish is now shown');
       },(errormessage)=>this.errMsg=<any>errormessage);
       this.createForm();
   }
