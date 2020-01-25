@@ -8,22 +8,16 @@ import {switchMap} from 'rxjs/operators';
 import { stringify } from 'querystring';
 import { FormGroup, FormBuilder,Validators, FormControl } from '@angular/forms';
 import { Comment } from '../shared/comment';
-import {trigger,state,style,animate,transition} from '@angular/animations';
+import {visibility,flyInOut,expand} from '../animations/app.animations';
 @Component({
   selector: 'app-dish-details',
   templateUrl: './dish-details.component.html',
   styleUrls: ['./dish-details.component.scss'],
-  animations:[//trigger('triggername',[state('statename',what to do)])
-    trigger('visibility',[state('shown',style({
-      transform:'scale(1.01)',
-      opacity:1//means it is completely shown
-    })),state('hidden',style({
-      transform:'scale(0.33)',
-      opacity:0//means it is completely hidden
-    })),
-    transition('* => *',animate('0.8s ease-in-out'))//moving from any state to any other state
-  ])
-  ]
+  host:{
+    '[@flyInOut]':'true',
+    'style':'display:block'
+  },
+  animations:[visibility,flyInOut,expand]
 })
 
 export class DishDetailsComponent implements OnInit {

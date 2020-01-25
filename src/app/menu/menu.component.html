@@ -6,7 +6,7 @@
       <hr>
     </div>
   </div>
-  <div FxFlex *ngIf="Dishes">
+  <div FxFlex *ngIf="Dishes" [@expand]>
     <mat-grid-list fxFlex cols="2" rowHeight="200px" >
       <mat-grid-tile *ngFor="let dish of Dishes" [routerLink]="['/dishDetails',dish.id]"  appHighlight>
         <img height="200px" src="{{baseURL + dish.image}}" alt={{dish.name}}>
